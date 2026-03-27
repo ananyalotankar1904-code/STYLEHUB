@@ -1,0 +1,20 @@
+{
+  "minimal": {
+    "description": "Clean lines, neutral tones, understated elegance",
+    "preferred_colors": ["white", "black", "grey", "beige", "navy"],
+    "preferred_fabrics": ["cotton", "linen", "wool"],
+    "avoid": ["loud prints", "neon", "heavy embellishments"]
+  },
+  "streetwear": {
+    "description": "Urban, casual, bold and expressive",
+    "preferred_colors": ["black", "white", "red", "olive", "camo"],
+    "preferred_fabrics": ["denim", "jersey", "fleece", "nylon"],
+    "avoid": ["formal cuts", "silk", "pastel tones"]
+  },
+  "formal": {
+    "description": "Polished, professional, classic silhouettes",
+    "preferred_colors": ["navy", "charcoal", "white", "burgundy", "grey"],
+    "preferred_fabrics": ["wool", "cotton blend", "silk", "polyester blend"],
+    "avoid": ["ripped fabric", "oversized fits", "graphic prints"]
+  }
+}
