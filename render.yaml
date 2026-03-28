@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: stylehub-backend
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGO_URI
+        sync: false # Set this in Render dashboard
+      - key: PYTHONPATH
+        value: ./backend
+
+  - type: web
+    name: stylehub-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: stylehub-backend
+          type: web
+          property: host
