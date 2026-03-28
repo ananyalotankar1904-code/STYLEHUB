@@ -7,6 +7,7 @@ import { fetchWardrobe, deleteWardrobeItem, addWardrobeItem } from "@/lib/api";
 import ClothingCard from "@/components/ClothingCard";
 import AddItemModal from "@/components/AddItemModal";
 import { Plus, Shirt, Loader2 } from "lucide-react";
+import { compressImage } from "@/lib/utils";
 
 export default function ClosetPage() {
   const [items, setItems] = useState<ClothingItem[]>([]);
@@ -120,11 +121,13 @@ export default function ClosetPage() {
                   if (!file) return;
                   const reader = new FileReader();
                   reader.onloadend = async () => {
-                    const base64 = reader.result as string;
-                    const emojiMap: Record<string, string> = {
-                      Tops: "👕", Bottoms: "👖", Outerwear: "🧥", Footwear: "👟", Accessories: "👜",
-                    };
+                    const rawBase64 = reader.result as string;
                     try {
+                      // Compress before sending
+                      const base64 = await compressImage(rawBase64);
+                      const emojiMap: Record<string, string> = {
+                        Tops: "👕", Bottoms: "👖", Outerwear: "🧥", Footwear: "👟", Accessories: "👜",
+                      };
                       const newItem = await addWardrobeItem({
                         name: `New ${cat} ${countFor(cat) + 1}`,
                         category: cat as any,
@@ -136,7 +139,10 @@ export default function ClosetPage() {
                         imageSource: base64
                       });
                       handleAdd(newItem);
-                    } catch (err) { alert("Error adding item"); }
+                    } catch (err) { 
+                      console.error("Quick add error:", err);
+                      alert("Error adding item"); 
+                    }
                   };
                   reader.readAsDataURL(file);
                 }}

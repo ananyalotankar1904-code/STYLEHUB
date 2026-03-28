@@ -5,6 +5,7 @@ import { X, Plus, Loader2 } from "lucide-react";
 import { ClothingItem } from "@/lib/types";
 import { CATEGORIES } from "@/lib/mockData";
 import { addWardrobeItem } from "@/lib/api";
+import { compressImage } from "@/lib/utils";
 
 interface Props {
   onAdd: (item: ClothingItem) => void;
@@ -30,8 +31,16 @@ export default function AddItemModal({ onAdd, onClose }: Props) {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageSource(reader.result as string);
+      reader.onloadend = async () => {
+        const base64 = reader.result as string;
+        try {
+          // Compress the base64 before saving to state
+          const compressed = await compressImage(base64);
+          setImageSource(compressed);
+        } catch (err) {
+          console.error("Compression error:", err);
+          setImageSource(base64); // Fallback to original if compression fails
+        }
       };
       reader.readAsDataURL(file);
     }
