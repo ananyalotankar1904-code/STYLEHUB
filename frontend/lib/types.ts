@@ -27,6 +27,7 @@ export interface OutfitSuggestion {
     bottom: OutfitItem | null;
     shoes: OutfitItem | null;
     outerwear?: OutfitItem | null;
+    accessory?: OutfitItem | null;
   };
   style_note: string;
   missing_categories: string[];
@@ -36,6 +37,7 @@ export interface OutfitSuggestion {
     preferred_fabrics: string[];
     avoid: string[];
   };
+  compatibility_score?: number;
   source: "wardrobe" | "mock";
 }
 

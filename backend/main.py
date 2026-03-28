@@ -5,7 +5,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.wardrobe import router as wardrobe_router
-from routes.outfit import router as outfit_router
+# Using the enhanced outfit router
+from routes.outfit_v2 import router as outfit_router
 
 app = FastAPI(
     title="Fashion AI Assistant API",

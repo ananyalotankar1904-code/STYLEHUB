@@ -6,13 +6,32 @@ import LoadingState from "@/components/LoadingState";
 import OutfitSuggestion from "@/components/OutfitSuggestion";
 import { OutfitSuggestion as OutfitSuggestionType, ClothingItem } from "@/lib/types";
 import { fetchWardrobe } from "@/lib/api";
-import { Wand2, Shirt } from "lucide-react";
+import { Wand2, Shirt, Clock, Trash2 } from "lucide-react";
+import { useOutfitHistory } from "@/hooks/useOutfitHistory";
 
 export default function GetDressedPage() {
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<ClothingItem[]>([]);
   const [wardrobeLoading, setWardrobeLoading] = useState(true);
   const [result, setResult] = useState<OutfitSuggestionType | null>(null);
+  const { history, saveOutfit, clearHistory } = useOutfitHistory();
+
+  const handleResult = (data: OutfitSuggestionType) => {
+    setResult(data);
+  };
+
+  const handleManualSave = () => {
+    if (!result) return;
+    saveOutfit({
+      occasion: result.occasion,
+      trend: result.trend,
+      top: result.outfit.top,
+      bottom: result.outfit.bottom,
+      shoes: result.outfit.shoes,
+      outerwear: result.outfit.outerwear,
+      accessory: result.outfit.accessory,
+    });
+  };
 
   useEffect(() => {
     async function load() {
@@ -49,7 +68,7 @@ export default function GetDressedPage() {
       {loading || wardrobeLoading ? (
         <LoadingState />
       ) : result ? (
-        <OutfitSuggestion suggestion={result} onReset={handleReset} />
+        <OutfitSuggestion suggestion={result} onReset={handleReset} onSave={handleManualSave} />
       ) : items.length === 0 ? (
         <div style={{
           textAlign: "center",
@@ -69,11 +88,57 @@ export default function GetDressedPage() {
           </a>
         </div>
       ) : (
-        <div style={{ maxWidth: "540px" }}>
+        <div style={{ maxWidth: "540px", width: "100%" }}>
           <GetDressedForm
-            onResult={setResult}
+            onResult={handleResult}
             onLoading={setLoading}
           />
+
+          {history.length > 0 && (
+            <div style={{ marginTop: "4rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <Clock size={20} color="var(--text-secondary)" />
+                  <h2 style={{ fontSize: "1.25rem", fontWeight: 600 }}>Previously Styled</h2>
+                  <span style={{ background: "#fce7f3", color: "#db2777", border: "1px solid #fbcfe8", padding: "2px 8px", borderRadius: "100px", fontSize: "0.75rem", fontWeight: 600 }}>
+                    {history.length}
+                  </span>
+                </div>
+                <button onClick={clearHistory} className="btn-outline" style={{ padding: "6px 12px", fontSize: "0.8rem", height: "auto", border: "none", opacity: 0.8 }}>
+                  <Trash2 size={16} style={{ marginRight: "4px" }} />
+                  Clear
+                </button>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {history.map((record) => (
+                  <div key={record.id} style={{ background: "var(--surface)", padding: "1.5rem", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
+                      <div style={{ fontWeight: 600, textTransform: "capitalize" }}>{record.occasion} &bull; {record.trend}</div>
+                      <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>{new Date(record.date).toLocaleDateString()}</div>
+                    </div>
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      {[record.top, record.bottom, record.shoes, record.outerwear, record.accessory].filter(Boolean).map((item, idx) => {
+                        if (!item) return null;
+                        return (
+                          <div key={idx} style={{ flex: 1, background: "var(--bg)", borderRadius: "8px", padding: "0.5rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
+                            <div style={{ width: "40px", height: "40px", borderRadius: "100px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface-2)", fontSize: "1.5rem" }}>
+                              {item.imageSource ? (
+                                <img src={item.imageSource} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              ) : (
+                                "✨"
+                              )}
+                            </div>
+                            <span style={{ fontSize: "0.7rem", textAlign: "center", color: "var(--text-secondary)", lineHeight: 1.2 }}>{item.name}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

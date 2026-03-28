@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from database import db
-from models import OutfitRequest
-from logic.outfit_logic import generate_outfit
+from models_v2 import OutfitRequest
+# Using refactored scoring engine
+from logic.outfit_logic_v2 import generate_outfit
 
 router = APIRouter()
 

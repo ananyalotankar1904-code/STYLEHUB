@@ -4,12 +4,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Shirt, Wand2, Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [username, setUsername] = useState<string>("guest");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("sh-username");
+    if (saved) setUsername(saved);
+  }, []);
+
+  const handleLogin = () => {
+    const name = window.prompt("Enter your personal closet name (e.g. your name):", username === "guest" ? "" : username);
+    if (name) {
+      localStorage.setItem("sh-username", name.trim());
+      setUsername(name.trim());
+      window.location.reload(); // refresh to load their specific closet
+    }
+  };
 
   const links = [
     { href: "/closet", label: "My Closet", icon: Shirt },
@@ -45,7 +60,15 @@ export default function Navbar() {
         </nav>
 
         {/* Right controls */}
-        <div className="nav-actions">
+        <div className="nav-actions" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <button 
+            onClick={handleLogin}
+            className="btn-outline" 
+            style={{ padding: "6px 14px", fontSize: "0.85rem", height: "auto", borderRadius: "100px" }}
+          >
+            {username === "guest" ? "Sign In" : `Hi, ${username}`}
+          </button>
+
           <button
             onClick={toggleTheme}
             className="theme-toggle"
