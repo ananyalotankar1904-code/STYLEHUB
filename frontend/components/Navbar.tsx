@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { Shirt, Wand2, Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [username, setUsername] = useState<string>("guest");
@@ -22,7 +24,7 @@ export default function Navbar() {
     if (name) {
       localStorage.setItem("sh-username", name.trim());
       setUsername(name.trim());
-      window.location.reload(); // refresh to load their specific closet
+      router.refresh(); // refresh to load their specific closet
     }
   };
 
@@ -36,10 +38,12 @@ export default function Navbar() {
       <div className="navbar-inner">
         {/* Logo */}
         <Link href="/" className="logo">
-          <img
+          <Image
             src="/logo.png"
             alt="Logo"
             className="logo-img"
+            width={28}
+            height={28}
             style={{ height: "28px", width: "auto", borderRadius: "4px" }}
           />
           <span className="logo-text">StyleHub</span>

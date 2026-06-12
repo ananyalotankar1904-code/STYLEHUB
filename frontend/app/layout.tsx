@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
-import Chatbot from "@/components/Chatbot";
+import ChatbotWrapper from "@/components/ChatbotWrapper";
 
 export const metadata: Metadata = {
   title: "StyleHub — Your AI-Powered Digital Closet",
@@ -33,7 +33,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>
-          <Chatbot />
+          <ChatbotWrapper />
         </ThemeProvider>
       </body>
     </html>

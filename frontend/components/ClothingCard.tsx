@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+import Image from "next/image";
 import { ClothingItem } from "@/lib/types";
 import { Trash2, Tag } from "lucide-react";
 
@@ -8,15 +10,17 @@ interface Props {
   onDelete?: (id: string) => void;
 }
 
-export default function ClothingCard({ item, onDelete }: Props) {
+const ClothingCard = memo(function ClothingCard({ item, onDelete }: Props) {
   return (
     <div className="clothing-card">
-      <div className="clothing-card-emoji">
+      <div className="clothing-card-emoji" style={{ position: "relative" }}>
         {item.imageSource ? (
-          <img
+          <Image
             src={item.imageSource}
             alt={item.name}
-            style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "var(--radius-sm)" }}
+            fill
+            style={{ objectFit: "cover", borderRadius: "var(--radius-sm)" }}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
           item.emoji
@@ -47,4 +51,6 @@ export default function ClothingCard({ item, onDelete }: Props) {
       )}
     </div>
   );
-}
+});
+
+export default ClothingCard;

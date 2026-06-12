@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { CATEGORIES } from "@/lib/mockData";
 import { ClothingItem } from "@/lib/types";
 import { fetchWardrobe, deleteWardrobeItem, addWardrobeItem } from "@/lib/api";
 import ClothingCard from "@/components/ClothingCard";
-import AddItemModal from "@/components/AddItemModal";
+import dynamic from "next/dynamic";
+
+const AddItemModal = dynamic(() => import("@/components/AddItemModal"), { ssr: false });
 import { Plus, Shirt, Loader2 } from "lucide-react";
 import { compressImage } from "@/lib/utils";
 
@@ -44,13 +46,21 @@ export default function ClosetPage() {
 
   const allCategories = ["All", ...CATEGORIES];
 
-  const filtered =
-    activeCategory === "All"
+  const filtered = useMemo(() => {
+    return activeCategory === "All"
       ? items
       : items.filter((i) => i.category === activeCategory);
+  }, [items, activeCategory]);
 
-  const countFor = (cat: string) =>
-    cat === "All" ? items.length : items.filter((i) => i.category === cat).length;
+  const counts = useMemo(() => {
+    const map: Record<string, number> = { All: items.length };
+    CATEGORIES.forEach((cat) => {
+      map[cat] = items.filter((i) => i.category === cat).length;
+    });
+    return map;
+  }, [items]);
+
+  const countFor = useCallback((cat: string) => counts[cat] || 0, [counts]);
 
   return (
     <div className="page">

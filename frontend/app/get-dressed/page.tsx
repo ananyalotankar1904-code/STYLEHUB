@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import GetDressedForm from "@/components/GetDressedForm";
 import LoadingState from "@/components/LoadingState";
-import OutfitSuggestion from "@/components/OutfitSuggestion";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+
+const OutfitSuggestion = dynamic(() => import("@/components/OutfitSuggestion"), { ssr: false });
 import { OutfitSuggestion as OutfitSuggestionType, ClothingItem } from "@/lib/types";
 import { fetchWardrobe } from "@/lib/api";
 import { Wand2, Shirt, Clock, Trash2 } from "lucide-react";
@@ -122,9 +125,9 @@ export default function GetDressedPage() {
                         if (!item) return null;
                         return (
                           <div key={idx} style={{ flex: 1, background: "var(--bg)", borderRadius: "8px", padding: "0.5rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
-                            <div style={{ width: "40px", height: "40px", borderRadius: "100px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface-2)", fontSize: "1.5rem" }}>
+                            <div style={{ position: "relative", width: "40px", height: "40px", borderRadius: "100px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface-2)", fontSize: "1.5rem" }}>
                               {item.imageSource ? (
-                                <img src={item.imageSource} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                <Image src={item.imageSource} alt={item.name} fill style={{ objectFit: "cover" }} sizes="40px" />
                               ) : (
                                 "✨"
                               )}

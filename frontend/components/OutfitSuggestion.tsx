@@ -3,6 +3,7 @@
 import { OutfitSuggestion as OutfitSuggestionType } from "@/lib/types";
 import { Sparkles, RotateCcw, Share2, BookmarkPlus, Check } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 interface Props {
   suggestion: OutfitSuggestionType;
@@ -110,12 +111,14 @@ export default function OutfitSuggestion({ suggestion, onReset, onSave }: Props)
 
           return (
             <div key={key} className="outfit-slot" style={{ minWidth: "120px", maxWidth: "160px", flex: "1 1 120px" }}>
-              <div className="outfit-slot-emoji">
+              <div className="outfit-slot-emoji" style={{ position: "relative" }}>
                 {item.imageSource ? (
-                  <img
+                  <Image
                     src={item.imageSource}
                     alt={item.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "var(--radius-sm)" }}
+                    fill
+                    style={{ objectFit: "cover", borderRadius: "var(--radius-sm)" }}
+                    sizes="(max-width: 768px) 100vw, 160px"
                   />
                 ) : (
                   meta.emoji

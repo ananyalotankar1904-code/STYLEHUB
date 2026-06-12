@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { X, Plus, Loader2 } from "lucide-react";
 import { ClothingItem } from "@/lib/types";
 import { CATEGORIES } from "@/lib/mockData";
@@ -102,10 +103,12 @@ export default function AddItemModal({ onAdd, onClose }: Props) {
               onClick={() => document.getElementById("photo-input")?.click()}
             >
               {imageSource ? (
-                <img
+                <Image
                   src={imageSource}
                   alt="Preview"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 768px) 100vw, 400px"
                 />
               ) : (
                 <div style={{ textAlign: "center", color: "var(--text-muted)" }}>
